@@ -15,8 +15,8 @@ public class PrivateChatRoomDTO {
 
     public PrivateChatRoomDTO create(String roomName) {
         PrivateChatRoomDTO chatRoom = new PrivateChatRoomDTO();
-        PrivateChatRoomDTO.roomId = UUID.randomUUID().toString();
-        PrivateChatRoomDTO.roomName = roomName;
+        this.roomId = UUID.randomUUID().toString();
+        this.roomName = roomName;
 
         return chatRoom;
     }

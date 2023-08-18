@@ -6,12 +6,10 @@ import org.springframework.context.event.EventListener;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.stereotype.Component;
-import org.springframework.web.socket.messaging.SessionConnectedEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 import org.springframework.web.socket.messaging.SessionSubscribeEvent;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @Component
@@ -28,7 +26,7 @@ public class WebSocketEventListener {
         String destination = headerAccessor.getDestination();
 
         sessionDestination.put(headerAccessor.getSessionId(), destination);
-
+        log.info(headerAccessor.getSessionId());
         if(!roomUsers.containsKey(destination)) {
             roomUsers.put(destination, 1);
         } else {
@@ -45,9 +43,10 @@ public class WebSocketEventListener {
 
         if(roomUsers.containsKey(destination)) {
             roomUsers.put(destination, roomUsers.get(destination) - 1);
+            messagingTemplate.convertAndSend(destination, roomUsers);
+
         }
         log.info(roomUsers.toString());
-        messagingTemplate.convertAndSend(destination, roomUsers);
 
     }
 }
