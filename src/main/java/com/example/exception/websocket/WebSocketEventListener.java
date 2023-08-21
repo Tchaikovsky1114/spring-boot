@@ -24,29 +24,37 @@ public class WebSocketEventListener {
     public void handleWebSocketSubscribeListener(SessionSubscribeEvent event) {
         StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
         String destination = headerAccessor.getDestination();
-        log.info(headerAccessor.toString());
         sessionDestination.put(headerAccessor.getSessionId(), destination);
-        log.info(headerAccessor.getSessionId());
+
         if(!roomUsers.containsKey(destination)) {
             roomUsers.put(destination, 1);
         } else {
             roomUsers.put(destination, roomUsers.get(destination) + 1);
         }
+
         log.info(roomUsers.toString());
-        messagingTemplate.convertAndSend(destination + "/usercount", roomUsers.get(destination));
+
+        assert destination != null;
+        if (destination.contains("usercount")) {
+            messagingTemplate.convertAndSend(destination, roomUsers.get(destination));
+        }
     }
 
     @EventListener
     public void handleWebSocketDisconnectListener(SessionDisconnectEvent event) {
         StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
+        final Object channel = headerAccessor.getHeader("channel");
+
         String destination = sessionDestination.get(headerAccessor.getSessionId());
 
-        if(roomUsers.containsKey(destination)) {
-            roomUsers.put(destination, roomUsers.get(destination) - 1);
-            messagingTemplate.convertAndSend(destination, roomUsers);
-
+        log.info("terminated user destination is : {}",destination);
+        log.info("Channel : {}",channel);
+//        assert destination != null;
+//        log.info(roomUsers.toString());
+        if(destination != null && destination.contains("usercount")) {
+            messagingTemplate.convertAndSend(destination, roomUsers.get(destination) > 0 ? roomUsers.get(destination) -1 : 0);
         }
-        log.info(roomUsers.toString());
+
 
     }
 }
