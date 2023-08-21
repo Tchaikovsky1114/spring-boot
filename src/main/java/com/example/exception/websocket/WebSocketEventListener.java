@@ -24,7 +24,7 @@ public class WebSocketEventListener {
     public void handleWebSocketSubscribeListener(SessionSubscribeEvent event) {
         StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
         String destination = headerAccessor.getDestination();
-
+        log.info(headerAccessor.toString());
         sessionDestination.put(headerAccessor.getSessionId(), destination);
         log.info(headerAccessor.getSessionId());
         if(!roomUsers.containsKey(destination)) {
@@ -33,7 +33,7 @@ public class WebSocketEventListener {
             roomUsers.put(destination, roomUsers.get(destination) + 1);
         }
         log.info(roomUsers.toString());
-        messagingTemplate.convertAndSend(destination, roomUsers);
+        messagingTemplate.convertAndSend(destination + "/usercount", roomUsers.get(destination));
     }
 
     @EventListener

@@ -32,5 +32,10 @@ public class ChatController {
         log.info("userList = {}",userList);
         return userList;
     }
-
+    @MessageMapping("/chat/userlist/disconnect")
+    @SendTo("/topic/public/userlist")
+    public List<String> deleteUser(@Payload String username) {
+        userList.remove(username);
+        return userList;
+    }
 }
