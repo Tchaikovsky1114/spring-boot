@@ -49,7 +49,7 @@ public class ChatController {
         ChatRoom chatRoom = chatRoomManager.getChatRoom(roomId);
         chatRoom.changeUsername(userlist.getPrevUser(), userlist.getCurrentUser());
 //        log.info("@MemberController, chat/{roomId}/changeId");
-//        log.info("current chatRoom user = {}",chatRoom.getUsers());
+        log.info("current chatRoom user = {}",chatRoom.getUsers());
 //        log.info("current chatRoom roomId = {}",roomId);
 //        System.out.println("/topic/" + roomId + "/userlist");
         messagingTemplate.convertAndSend("/topic/" + roomId + "/userlist", chatRoom.getUsers());
@@ -61,6 +61,7 @@ public class ChatController {
                                      ) {
         if(chatRoomManager.getChatRoom(roomId) == null) {
             chatRoomManager.createChatRoom(roomId);
+            chatRoomManager.addUserToChatRoom(roomId, username);
         }
 
         chatRoomManager.addUserToChatRoom(roomId, username);
