@@ -1,4 +1,5 @@
-package com.example.exception.websocket.model;
+package com.example.exception.model;
+
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,11 +8,9 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Userlist {
+public class ChatUserData {
 
-    private String prevUser;
-    private String currentUser;
-
-
+    private String token;
+    private String name;
 
 }

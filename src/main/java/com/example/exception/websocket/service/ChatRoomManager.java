@@ -1,14 +1,15 @@
 package com.example.exception.websocket.service;
 
+import com.example.exception.model.ChatUserData;
 import com.example.exception.websocket.model.ChatRoom;
 import org.springframework.stereotype.Component;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 @Component
 public class ChatRoomManager {
-    private Map<String, ChatRoom> chatRooms = new HashMap<>();
+    private final Map<String, ChatRoom> chatRooms = new HashMap<>();
+    private final Set<String> chatTokenList = new HashSet<>();
 
     public void createChatRoom(String roomId) {
         chatRooms.put(roomId, new ChatRoom(roomId));
@@ -18,16 +19,27 @@ public class ChatRoomManager {
         return chatRooms.get(roomId);
     }
 
-    public void addUserToChatRoom(String roomId, String username) {
+    public void addUserToChatRoom(String roomId, ChatUserData chatUserData) {
         ChatRoom chatRoom = chatRooms.get(roomId);
         if(chatRoom != null){
-            chatRoom.addUser(username);
+            chatRoom.addUser(chatUserData);
         }
     }
-    public void removeUserFromChatRoom(String roomId, String username) {
+
+    public ChatRoom findChatRoom(String roomId) {
+        return chatRooms.get(roomId);
+    }
+
+    public void removeUserFromChatRoom(String roomId, String token) {
         ChatRoom chatRoom = chatRooms.get(roomId);
+
         if(chatRoom != null) {
-            chatRoom.removeUser(username);
+            chatRoom.removeUser(token);
         }
+    }
+
+    public void changeUsername(String roomId, ChatUserData chatUserData) {
+        ChatRoom chatRoom = chatRooms.get(roomId);
+        chatRoom.changeUsername(chatUserData.getToken(), chatUserData);
     }
 }
